@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cruz Tires & Batteries – Lake Elsinore, CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:   #0A0A0A;
+    --steel:   #1C1C1E;
+    --mid:     #2E2E30;
+    --chrome:  #C0C0C0;
+    --silver:  #E8E8E8;
+    --cream:   #F5F3EE;
+    --red:     #E8142A;
+    --red-dk:  #B50F20;
+    --white:   #FFFFFF;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    text-decoration: none;
+    line-height: 1;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--red); color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 1rem; letter-spacing: 0.06em;
+    text-decoration: none; padding: 10px 20px; border-radius: 6px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--red-dk); }
+  .nav-cta svg { width: 16px; height: 16px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100svh;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 100px 28px 60px;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 50%, rgba(232,20,42,0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 50% at 20% 80%, rgba(192,192,192,0.04) 0%, transparent 60%),
+      var(--black);
+  }
+
+  /* 3D Tire Ring — the signature element */
+  .tire-scene {
+    position: absolute; right: -60px; top: 50%;
+    transform: translateY(-50%);
+    width: 520px; height: 520px;
+    perspective: 900px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  @media (max-width: 768px) {
+    .tire-scene {
+      width: 320px; height: 320px;
+      right: -100px; top: auto; bottom: 30px;
+      transform: none; opacity: 0.35;
+    }
+  }
+
+  .tire-ring {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: spinTire 14s linear infinite;
+  }
+  @keyframes spinTire {
+    from { transform: rotateY(0deg) rotateX(18deg); }
+    to   { transform: rotateY(360deg) rotateX(18deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tire-ring { animation: none; transform: rotateY(25deg) rotateX(18deg); }
+  }
+
+  /* Build tire from segments */
+  .tire-segment {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+  }
+  .tire-face {
+    position: absolute;
+    border-radius: 50%;
+    border: 62px solid rgba(30,30,32,0.95);
+    width: 100%; height: 100%;
+    box-shadow:
+      inset 0 0 0 8px rgba(200,200,200,0.12),
+      inset 0 0 0 62px rgba(20,20,20,0.6),
+      0 0 60px rgba(232,20,42,0.08);
+  }
+  .tire-face.front {
+    transform: translateZ(62px);
+    border-color: rgba(38,38,42,0.97);
+    background: radial-gradient(circle, rgba(50,50,55,1) 34%, rgba(20,20,22,1) 35%, rgba(20,20,22,1) 58%, rgba(38,38,42,1) 59%);
+  }
+  .tire-face.back {
+    transform: translateZ(-62px) rotateY(180deg);
+    border-color: rgba(22,22,24,0.97);
+    background: radial-gradient(circle, rgba(40,40,44,1) 34%, rgba(12,12,14,1) 35%, rgba(12,12,14,1) 58%, rgba(28,28,30,1) 59%);
+  }
+
+  /* Spokes on front face */
+  .spoke {
+    position: absolute; top: 50%; left: 50%;
+    width: 44%; height: 8px;
+    background: linear-gradient(to right, rgba(200,200,210,0.9), rgba(140,140,155,0.5));
+    transform-origin: 0 50%;
+    border-radius: 2px;
+    margin-top: -4px;
+  }
+  .spoke::after {
+    content: '';
+    position: absolute; inset: -2px;
+    background: linear-gradient(to right, rgba(255,255,255,0.2), transparent);
+    border-radius: 2px;
+  }
+
+  /* Tread lines */
+  .tread-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    background:
+      repeating-conic-gradient(
+        rgba(255,255,255,0.04) 0deg, rgba(255,255,255,0.04) 3deg,
+        transparent 3deg, transparent 10deg
+      );
+  }
+
+  /* Hub cap */
+  .hub {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%) translateZ(70px);
+    width: 90px; height: 90px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(240,240,255,0.95), rgba(140,140,160,0.9) 60%, rgba(60,60,70,0.9));
+    box-shadow: 0 0 0 6px rgba(180,180,195,0.3), 0 8px 30px rgba(0,0,0,0.5);
+  }
+  .hub-inner {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 40px; height: 40px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(100,100,120,1), rgba(30,30,40,1));
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  /* Cylinders connecting front/back using 36 thin panels */
+  .cylinder-wrap {
+    position: absolute; inset: 0;
+    transform-style: preserve-3d;
+  }
+  .cylinder-panel {
+    position: absolute; top: 0; left: 50%;
+    width: 2px; height: 100%;
+    background: linear-gradient(to bottom, transparent 15%, rgba(50,50,54,1) 20%, rgba(50,50,54,1) 80%, transparent 85%);
+    transform-origin: 0 50%;
+    transform-style: preserve-3d;
+  }
+
+  /* Hero text */
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 560px;
+  }
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: inline-block;
+    width: 28px; height: 2px; background: var(--red);
+  }
+  .hero-h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 900; line-height: 0.92;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .hero-h1 .accent { color: var(--red); }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: var(--chrome);
+    line-height: 1.55;
+    max-width: 440px;
+    margin-bottom: 36px;
+  }
+  .hero-sub strong { color: var(--white); }
+
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--red); color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem; font-weight: 700; letter-spacing: 0.06em;
+    text-decoration: none; padding: 16px 32px; border-radius: 8px;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 20px rgba(232,20,42,0.35);
+  }
+  .btn-primary:hover { background: var(--red-dk); transform: translateY(-1px); }
+  .btn-primary svg { width: 20px; height: 20px; }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--silver);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem; font-weight: 600; letter-spacing: 0.05em;
+    text-decoration: none; padding: 14px 24px; border-radius: 8px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--chrome); color: var(--white); }
+
+  .hero-trust {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 36px;
+    font-size: 0.9rem; color: rgba(192,192,192,0.75);
+  }
+  .stars { color: #F5A623; letter-spacing: 2px; }
+
+  /* ── MARQUEE STRIP ── */
+  .marquee-strip {
+    background: var(--red); overflow: hidden;
+    padding: 14px 0;
+    border-top: 1px solid var(--red-dk);
+    border-bottom: 1px solid var(--red-dk);
+  }
+  .marquee-inner {
+    display: flex; align-items: center; gap: 0;
+    width: max-content;
+    animation: scrollLeft 22s linear infinite;
+  }
+  @keyframes scrollLeft {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee-item {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--white);
+    padding: 0 28px; white-space: nowrap;
+    opacity: 0.9;
+  }
+  .marquee-dot { color: rgba(255,255,255,0.5); padding: 0 4px; }
+
+  /* ── SERVICES ── */
+  .services {
+    background: var(--cream);
+    padding: 90px 28px;
+  }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800; text-transform: uppercase;
+    color: var(--black); line-height: 1;
+    margin-bottom: 14px;
+  }
+  .section-sub {
+    color: #555; font-size: 1rem; line-height: 1.6;
+    max-width: 500px; margin-bottom: 52px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px; max-width: 960px; margin: 0 auto;
+  }
+  .service-card {
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px; padding: 32px 28px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+  }
+  .service-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: var(--red); display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .service-icon svg { width: 28px; height: 28px; color: var(--white); }
+  .service-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.25rem; font-weight: 700; text-transform: uppercase;
+    color: var(--black); margin-bottom: 8px;
+  }
+  .service-desc { font-size: 0.9rem; color: #666; line-height: 1.55; }
+
+  /* ── WHY CRUZ ── */
+  .why {
+    background: var(--steel);
+    padding: 90px 28px;
+  }
+  .why .section-title { color: var(--white); }
+  .why .section-sub { color: var(--chrome); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 28px; max-width: 900px;
+  }
+  .why-item { display: flex; gap: 18px; align-items: flex-start; }
+  .why-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.8rem; font-weight: 900;
+    color: var(--red); line-height: 1;
+    min-width: 48px;
+  }
+  .why-text-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem; font-weight: 700; text-transform: uppercase;
+    color: var(--white); margin-bottom: 6px; letter-spacing: 0.03em;
+  }
+  .why-text-body { font-size: 0.88rem; color: var(--chrome); line-height: 1.55; }
+
+  /* ── REVIEWS ── */
+  .reviews {
+    background: var(--black);
+    padding: 90px 28px;
+  }
+  .reviews .section-title { color: var(--white); }
+  .reviews .section-sub { color: var(--chrome); }
+
+  .reviews-header { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 48px; }
+  .rating-block {
+    display: flex; flex-direction: column; align-items: flex-start;
+  }
+  .rating-big {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 5rem; font-weight: 900; color: var(--white); line-height: 1;
+  }
+  .rating-stars { color: #F5A623; font-size: 1.6rem; letter-spacing: 4px; margin: 4px 0; }
+  .rating-label { font-size: 0.82rem; color: var(--chrome); }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px; max-width: 900px;
+  }
+  .review-card {
+    background: var(--steel);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 28px 24px;
+  }
+  .review-stars { color: #F5A623; font-size: 1rem; letter-spacing: 3px; margin-bottom: 14px; }
+  .review-text {
+    font-size: 0.95rem; color: var(--silver);
+    line-height: 1.6; margin-bottom: 18px;
+    font-style: italic;
+  }
+  .review-author { font-size: 0.82rem; color: var(--chrome); font-weight: 600; letter-spacing: 0.04em; }
+  .google-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.06); border-radius: 30px;
+    padding: 5px 12px; margin-top: 10px;
+    font-size: 0.75rem; color: var(--chrome);
+  }
+  .google-badge svg { width: 14px; height: 14px; }
+
+  /* ── HOURS + CTA ── */
+  .info {
+    background: var(--cream);
+    padding: 90px 28px;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px; max-width: 900px; margin: 0 auto;
+    align-items: start;
+  }
+  @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } }
+  .info .section-title { color: var(--black); }
+  .info .section-label { }
+
+  .hours-table { width: 100%; border-collapse: collapse; }
+  .hours-table tr { border-bottom: 1px solid rgba(0,0,0,0.07); }
+  .hours-table tr:last-child { border-bottom: none; }
+  .hours-table td { padding: 12px 4px; font-size: 0.95rem; color: #333; }
+  .hours-table td:last-child { text-align: right; font-weight: 600; color: var(--black); }
+  .hours-table .today td { color: var(--red); font-weight: 600; }
+  .hours-table .closed td { color: #999; }
+
+  .cta-box {
+    background: var(--black); border-radius: 16px;
+    padding: 40px 32px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .cta-box-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.9rem; font-weight: 800; text-transform: uppercase;
+    color: var(--white); line-height: 1.1;
+  }
+  .cta-box-title span { color: var(--red); }
+  .cta-box-sub { font-size: 0.9rem; color: var(--chrome); line-height: 1.5; }
+  .cta-phone {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.2rem; font-weight: 900; color: var(--white);
+    text-decoration: none; letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .cta-phone:hover { color: var(--red); }
+
+  .divider-line { width: 40px; height: 2px; background: rgba(255,255,255,0.15); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #050505;
+    padding: 40px 28px 28px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; justify-content: space-between;
+    gap: 24px; align-items: flex-start;
+  }
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 1.5rem;
+    color: var(--white); text-decoration: none;
+  }
+  .footer-logo span { color: var(--red); }
+  .footer-tagline { font-size: 0.82rem; color: #555; margin-top: 4px; }
+  .footer-links { display: flex; flex-direction: column; gap: 6px; }
+  .footer-links a { font-size: 0.88rem; color: #666; text-decoration: none; }
+  .footer-links a:hover { color: var(--chrome); }
+  .footer-copy { width: 100%; text-align: center; font-size: 0.75rem; color: #333; padding-top: 24px; border-top: 1px solid #111; margin-top: 12px; }
+
+  /* ── MAX WIDTH WRAPPER ── */
+  .wrap { max-width: 960px; margin: 0 auto; }
+
+  /* ── STICKY CALL BAR (mobile) ── */
+  .sticky-call {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
+    background: var(--red);
+    padding: 16px 24px;
+    text-align: center;
+  }
+  .sticky-call a {
+    display: flex; justify-content: center; align-items: center; gap: 10px;
+    color: var(--white); text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.25rem; font-weight: 800; letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .sticky-call svg { width: 20px; height: 20px; }
+  @media (max-width: 600px) {
+    .sticky-call { display: block; }
+    body { padding-bottom: 68px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">CRUZ <span>TIRES</span> & BATTERIES</a>
+  <a href="tel:9514710774" class="nav-cta">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6.5A2.5 2.5 0 014.5 4h.5a1 1 0 011 1v3a1 1 0 01-.293.707L4.5 10a11 11 0 005.5 5.5l1.293-1.207A1 1 0 0112 14h3a1 1 0 011 1v.5A2.5 2.5 0 0113.5 18C7.149 18 2 12.851 2 6.5z"/></svg>
+    Call Now
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <!-- 3D Tire -->
+  <div class="tire-scene" aria-hidden="true">
+    <div class="tire-ring" id="tireRing">
+      <!-- Cylinder wall (36 panels) -->
+      <div class="cylinder-wrap" id="cylWrap"></div>
+      <!-- Tread rings -->
+      <div style="position:absolute;inset:0;transform-style:preserve-3d;">
+        <div class="tread-ring" style="transform:translateZ(58px);"></div>
+        <div class="tread-ring" style="transform:translateZ(-58px) rotateY(180deg);"></div>
+      </div>
+      <!-- Faces -->
+      <div class="tire-segment">
+        <div class="tire-face back"></div>
+        <div class="tire-face front" id="frontFace">
+          <div class="tread-ring"></div>
+        </div>
+        <!-- Hub -->
+        <div class="hub">
+          <div class="hub-inner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Lake Elsinore, CA</p>
+    <h1 class="hero-h1">
+      TIRES<br>&amp; BATTERIES<br>
+      <span class="accent">DONE RIGHT.</span>
+    </h1>
+    <p class="hero-sub">
+      New &amp; used tires, battery replacement, and fast repairs —
+      <strong>same-day service</strong> with honest prices you'll remember.
+    </p>
+    <div class="hero-ctas">
+      <a href="tel:9514710774" class="btn-primary">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6.5A2.5 2.5 0 014.5 4h.5a1 1 0 011 1v3a1 1 0 01-.293.707L4.5 10a11 11 0 005.5 5.5l1.293-1.207A1 1 0 0112 14h3a1 1 0 011 1v.5A2.5 2.5 0 0113.5 18C7.149 18 2 12.851 2 6.5z"/></svg>
+        (951) 471-0774
+      </a>
+      <a href="#hours" class="btn-secondary">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>
+        See Hours
+      </a>
+    </div>
+    <div class="hero-trust">
+      <span class="stars">★★★★★</span>
+      <span>4.3 Stars on Google · Local &amp; Trusted Since Day One</span>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-inner" id="marquee">
+    <span class="marquee-item">New Tires</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Used Tires</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Battery Replacement</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Tire Repair</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Fast Service</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Same-Day Install</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Honest Pricing</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Lake Elsinore</span><span class="marquee-dot">◆</span>
+    <!-- duplicated for seamless loop -->
+    <span class="marquee-item">New Tires</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Used Tires</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Battery Replacement</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Tire Repair</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Fast Service</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Same-Day Install</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Honest Pricing</span><span class="marquee-dot">◆</span>
+    <span class="marquee-item">Lake Elsinore</span><span class="marquee-dot">◆</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services">
+  <div class="wrap">
+    <p class="section-label">What We Do</p>
+    <h2 class="section-title">We've Got You Covered</h2>
+    <p class="section-sub">From a flat fix to a full battery swap — quick, quality work without the dealership markup.</p>
+    <div class="services-grid">
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>
+        </div>
+        <p class="service-name">New Tires</p>
+        <p class="service-desc">Quality new tires for all vehicle types. We'll help you find the right fit at a fair price.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="service-name">Used Tires</p>
+        <p class="service-desc">Great-condition used tires when you need to save. Inspected and ready to roll.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="service-name">Battery Replacement</p>
+        <p class="service-desc">Dead battery? We test, replace, and get you back on the road — fast.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </div>
+        <p class="service-name">Tire Repair</p>
+        <p class="service-desc">Nails, punctures, slow leaks — we patch and plug so you don't have to replace.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </div>
+        <p class="service-name">Tire Rotation</p>
+        <p class="service-desc">Extend the life of your tires with a quick rotation to even out wear.</p>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+        </div>
+        <p class="service-name">Same-Day Service</p>
+        <p class="service-desc">Most jobs are done in and out. Bring it in, drive away the same day.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHY CRUZ -->
+<section class="why">
+  <div class="wrap">
+    <p class="section-label">Why Cruz?</p>
+    <h2 class="section-title">Fast. Fair. Local.</h2>
+    <p class="section-sub">We built our reputation one car at a time — on honest work, quick turnaround, and prices that don't sting.</p>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-num">01</div>
+        <div>
+          <p class="why-text-title">No Runaround</p>
+          <p class="why-text-body">We tell you what's wrong, what it costs, and we fix it — no upselling, no surprises.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">02</div>
+        <div>
+          <p class="why-text-title">In & Out Fast</p>
+          <p class="why-text-body">We respect your time. Most tire and battery jobs are done while you wait.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">03</div>
+        <div>
+          <p class="why-text-title">Prices That Make Sense</p>
+          <p class="why-text-body">Used or new, we offer options that work for your budget without cutting corners on safety.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">04</div>
+        <div>
+          <p class="why-text-title">Your Neighbors</p>
+          <p class="why-text-body">We're a local Lake Elsinore business — your word-of-mouth matters to us more than anything.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews">
+  <div class="wrap">
+    <p class="section-label">Google Reviews</p>
+    <div class="reviews-header">
+      <div class="rating-block">
+        <div class="rating-big">4.3</div>
+        <div class="rating-stars">★★★★☆</div>
+        <div class="rating-label">Google Rating</div>
+      </div>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Friendly, helpful staff with quick service."</p>
+        <p class="review-author">Google Reviewer</p>
+        <div class="google-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Verified Google Review
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The price was great for a used tire."</p>
+        <p class="review-author">Google Reviewer</p>
+        <div class="google-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Verified Google Review
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Fast work, in and out for tire repair."</p>
+        <p class="review-author">Google Reviewer</p>
+        <div class="google-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Verified Google Review
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOURS & CTA -->
+<section class="info" id="hours">
+  <div class="info-grid">
+    <div>
+      <p class="section-label">Visit Us</p>
+      <h2 class="section-title">Hours</h2>
+      <table class="hours-table">
+        <tr><td>Monday</td><td>8 AM – 6 PM</td></tr>
+        <tr><td>Tuesday</td><td>8 AM – 6 PM</td></tr>
+        <tr><td>Wednesday</td><td>8 AM – 6 PM</td></tr>
+        <tr><td>Thursday</td><td>8 AM – 6 PM</td></tr>
+        <tr><td>Friday</td><td>8 AM – 6 PM</td></tr>
+        <tr><td>Saturday</td><td>8 AM – 5 PM</td></tr>
+        <tr class="closed"><td>Sunday</td><td>Closed</td></tr>
+      </table>
+    </div>
+    <div class="cta-box">
+      <p class="cta-box-title">Ready to <span>Roll?</span></p>
+      <p class="cta-box-sub">Give us a call and we'll get you in and out today. No appointment needed for most services.</p>
+      <div class="divider-line"></div>
+      <a href="tel:9514710774" class="cta-phone">(951) 471-0774</a>
+      <a href="tel:9514710774" class="btn-primary" style="width:100%;justify-content:center;">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6.5A2.5 2.5 0 014.5 4h.5a1 1 0 011 1v3a1 1 0 01-.293.707L4.5 10a11 11 0 005.5 5.5l1.293-1.207A1 1 0 0112 14h3a1 1 0 011 1v.5A2.5 2.5 0 0113.5 18C7.149 18 2 12.851 2 6.5z"/></svg>
+        Call Now
+      </a>
+      <p style="font-size:0.78rem;color:#555;">Mon–Fri 8AM–6PM · Sat 8AM–5PM</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <a href="#" class="footer-logo">CRUZ <span>TIRES</span> & BATTERIES</a>
+      <p class="footer-tagline">Lake Elsinore, CA · Fast. Fair. Local.</p>
+    </div>
+    <div class="footer-links">
+      <a href="tel:9514710774">(951) 471-0774</a>
+      <a href="#hours">Hours & Location</a>
+    </div>
+  </div>
+  <p class="footer-copy">© 2025 Cruz Tires & Batteries · Lake Elsinore, CA</p>
+</footer>
+
+<!-- STICKY MOBILE CALL BAR -->
+<div class="sticky-call">
+  <a href="tel:9514710774">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6.5A2.5 2.5 0 014.5 4h.5a1 1 0 011 1v3a1 1 0 01-.293.707L4.5 10a11 11 0 005.5 5.5l1.293-1.207A1 1 0 0112 14h3a1 1 0 011 1v.5A2.5 2.5 0 0113.5 18C7.149 18 2 12.851 2 6.5z"/></svg>
+    TAP TO CALL · (951) 471-0774
+  </a>
+</div>
+
+<script>
+// Build the 3D tire cylinder panels
+(function() {
+  const wrap = document.getElementById('cylWrap');
+  const total = 48;
+  const size = 260; // half-size (container is 520px → radius ≈ 50%)
+  for (let i = 0; i < total; i++) {
+    const angle = (360 / total) * i;
+    const rad = (angle * Math.PI) / 180;
+    const x = Math.cos(rad) * size;
+    const y = Math.sin(rad) * size;
+    const el = document.createElement('div');
+    el.className = 'cylinder-panel';
+    el.style.cssText = `
+      left: 50%; top: 50%;
+      width: 124px;
+      height: 12px;
+      margin-top: -6px;
+      transform-origin: -${size}px 50%;
+      transform: rotate(${angle}deg) translateX(-${size}px) translateZ(0px);
+      background: linear-gradient(to bottom, rgba(30,30,34,0.85), rgba(50,50,55,0.9), rgba(30,30,34,0.85));
+      position: absolute;
+    `;
+    wrap.appendChild(el);
+  }
+})();
+
+// Build spokes on the front face
+(function() {
+  const face = document.getElementById('frontFace');
+  const spokeCount = 6;
+  for (let i = 0; i < spokeCount; i++) {
+    const angle = (360 / spokeCount) * i;
+    const s = document.createElement('div');
+    s.className = 'spoke';
+    s.style.transform = `rotate(${angle}deg)`;
+    face.appendChild(s);
+  }
+})();
+
+// Highlight today's hours row
+(function() {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = days[new Date().getDay()];
+  const rows = document.querySelectorAll('.hours-table tr');
+  rows.forEach(row => {
+    if (row.cells[0] && row.cells[0].textContent.trim() === today) {
+      row.classList.add('today');
+    }
+  });
+})();
+</script>
+</body>
+</html>
